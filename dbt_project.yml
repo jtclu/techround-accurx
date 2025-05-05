@@ -4,32 +4,24 @@ version: '1.0.0'
 # This setting configures which "profile" dbt uses for this project.
 profile: 'tech_round_accurx'
 
-# model-paths: ["models"]
+model-paths: ["models"]
 analysis-paths: ["analyses"]
-# test-paths: ["tests"]
-# seed-paths: ["seeds"]
 macro-paths: ["macros"]
-# snapshot-paths: ["snapshots"]
 
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
-
 models:
   tech_round_accurx:
-    src:
+    src: # this layer aims to cast data types and resolve any pipeline orchestration or source event naming inconsistencies but applies no analytical transformations
       +schema: src
       +materialized: table
 
-    staging:
+    staging: # filters src data based on subject domain and/or entity type and applies deduplication where appropriate.  consideration for the split is to allow for unstructured data to be easily surfaced from future feature developments
       +schema: staging
       +materialized: table
 
-    mart:
+    mart: # facts and dimensions based on analytical use case, needs to be modular & as normalized as possible to avoid redundancy issues for downstream BI/OBT uses 
       +schema: mart
       +materialized: table
-
-      # obt:
-      #   +schema: obt
-      #   +materialized: table

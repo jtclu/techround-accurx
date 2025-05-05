@@ -58,10 +58,6 @@ models:
         data_tests:
           - not_null
       - name: attachment_count
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
       - name: event_user_type
         data_tests:
           - not_null:
@@ -70,6 +66,8 @@ models:
       - name: event_version
       - name: has_error
       - name: message_id
+        data_tests:
+          - unique
       - name: message_length
       - name: message_type
         data_tests:
@@ -89,8 +87,7 @@ models:
               config:
                 severity: warn
 
-  - name: src_event
-    description: "application events"
+  - name: src_feature
     columns:
       - name: feature_name
         data_tests:

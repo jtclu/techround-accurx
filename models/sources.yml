@@ -1,6 +1,7 @@
 version: 2
 
 sources:
+
   - name: raw_mock_data
     database: tech-round-accurx
     schema: raw_mock_data

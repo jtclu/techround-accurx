@@ -1,0 +1,109 @@
+
+version: 2
+
+models:
+  - name: stg_features_by_org_sms
+    description: "SMS feature flag by date (export_day) by organisation"
+    data_tests:
+      - dbt_utils.mutually_exclusive_ranges:
+          lower_bound_column: valid_from
+          upper_bound_column: valid_to
+          partition_by: organisation_id
+          zero_length_range_allowed: false  
+    columns:
+      - name: organisation_id
+        data_tests:
+          - not_null
+      - name: valid_from
+      - name: valid_to
+      - name: sms_feature
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['SMS Lite', 'SMS Plus']
+              severity: warn
+      - name: product_tier
+        description: "whether the feature is free or paid-for"
+
+  - name: stg_features_by_org_video
+    description: "Video feature flag by date (export_day) by organisation"
+    data_tests:
+      - dbt_utils.mutually_exclusive_ranges:
+          lower_bound_column: valid_from
+          upper_bound_column: valid_to
+          partition_by: organisation_id
+          zero_length_range_allowed: false  
+    columns:
+      - name: organisation_id
+        data_tests:
+          - not_null
+      - name: valid_from
+      - name: valid_to
+      - name: has_video_enabled
+        data_tests:
+          - not_null
+
+  - name: stg_features_by_org_self_book_individual
+    description: "self book individual feature flag by date (export_day) by organisation"
+    data_tests:
+      - dbt_utils.mutually_exclusive_ranges:
+          lower_bound_column: valid_from
+          upper_bound_column: valid_to
+          partition_by: organisation_id
+          zero_length_range_allowed: false  
+    columns:
+      - name: organisation_id
+        data_tests:
+          - not_null
+      - name: valid_from
+      - name: valid_to
+      - name: has_self_book_enabled
+        data_tests:
+          - not_null
+
+  - name: stg_events_patientmessage
+    description: "events triggered when messages are sent to patients"
+    columns:
+      - name: event_timestamp
+        data_tests:
+          - not_null
+      - name: user_id
+        data_tests:
+          - not_null:
+              severity: warn
+      - name: organisation_id
+        data_tests:
+          - not_null:
+              severity: warn
+      - name: event_user_type
+      - name: product_origin
+        data_tests:
+          - not_null:
+              severity: warn
+      - name: message_type
+        data_tests:
+          - not_null:
+              severity: warn
+
+  - name: stg_events_videoinvite
+    description: "events triggered when video links are sent to patients"
+    columns:
+      - name: event_timestamp
+        data_tests:
+          - not_null
+      - name: user_id
+        data_tests:
+          - not_null:
+              severity: warn
+      - name: organisation_id
+        data_tests:
+          - not_null:
+              severity: warn
+      - name: product_origin
+        data_tests:
+          - not_null:
+              severity: warn
+      - name: message_type
+        data_tests:
+          - not_null:
+              severity: warn

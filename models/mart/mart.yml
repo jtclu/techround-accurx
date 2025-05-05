@@ -1,0 +1,127 @@
+
+version: 2
+
+models:
+
+  - name: fact_usage_videoinvite
+    description: "each row represents when the video invite is sent to a patient"
+    columns:
+      - name: event_id
+        description: "unique identifier for the event and primary key of the table"
+        data_tests:
+          - unique
+      - name: event_timestamp
+        description: "when the video_link was sent"
+      - name: user_id
+        description: "foreign key to the user dim"
+      - name: organisation_id_id
+        description: "foreign key to the organisation dim" # does not currently exist but assume this will be part of the star schema
+      - name: product_origin 
+        description: determines which feature is used
+      - name: message_type
+        description: determines mode of delivery for the message
+      - name: event_user_type
+        description: role of the user interacting with the feature
+      - name: event_client
+        description: whether the event originated from interactions with app or web client
+
+  - name: fact_usage_patientmessage
+    description: "each row represents when a message is sent to a patient"
+    columns:
+      - name: event_id
+        description: "unique identifier for the event and primary key of the table"
+        data_tests:
+          - unique
+      - name: user_id
+        description: "foreign key to the user dim"
+      - name: event_timestamp
+        description: "when the message was sent"
+      - name: organisation_id_id
+        description: "foreign key to the organisation dim" # does not currently exist but assume this will be part of the star schema
+      - name: product_origin 
+        description: determines which feature is used
+      - name: message_type
+        description: determines mode of delivery for the message
+      - name: event_user_type
+        description: role of the user interacting with the feature
+      - name: event_client
+        description: whether the event originated from interactions with app or web client
+
+  - name: dim_user_details
+    description: "slowly changing dimension of users and their details"
+    tests:
+      - dbt_utils.mutually_exclusive_ranges:
+          lower_bound_column: valid_from
+          upper_bound_column: valid_to
+          partition_by: user_id
+          zero_length_range_allowed: false  
+    columns:
+      - name: user_id
+        data_tests:
+          - not_null
+      - name: organisation_id
+        data_tests:
+          - not_null
+      - name: application_user_id
+        data_tests:
+          - not_null
+          - unique
+      - name: application_user_role
+        data_tests:
+          - not_null:
+              severity: warn
+      - name: application_user_status
+        data_tests:
+          - not_null
+      - name: valid_from
+      - name: valid_to
+
+  - name: dim_user_details
+    description: "slowly changing dimension of users and their details"
+    data_tests:
+      - dbt_utils.mutually_exclusive_ranges:
+          lower_bound_column: valid_from
+          upper_bound_column: valid_to
+          partition_by: user_id
+          zero_length_range_allowed: false  
+    columns:
+      - name: user_id
+        data_tests:
+          - not_null
+      - name: organisation_id
+        data_tests:
+          - not_null
+      - name: application_user_id
+        data_tests:
+          - not_null
+          - unique
+      - name: application_user_role
+        data_tests:
+          - not_null:
+              severity: warn
+      - name: application_user_status
+        data_tests:
+          - not_null
+      - name: valid_from
+      - name: valid_to
+
+  - name: dim_org_feature_access_daily
+    description: "daily flag report of which features are enabled for each organisation"
+    data_tests:
+    - dbt_utils.unique_combination_of_columns:
+        combination_of_columns:
+          - date_day
+          - organisation_id
+    columns:
+      - name: date_day
+        description: date since earliest feature flag data was captured in the datalake
+      - name: organisation_id
+        description: unique identifier for organisations with user access to the product/platform
+      - name: selfbook_enabled_flag
+        description: 1 denotes the feature is enabled for the organisation, 0 denotes it is not
+      - name: videoinvite_enabled_flag
+        description: 1 denotes the feature is enabled for the organisation, 0 denotes it is not
+      - name: sms_free_enabled_flag
+        description: 1 denotes the feature is enabled for the organisation, 0 denotes it is not
+      - name: sms_paid_enabled_flag
+        description: 1 denotes the feature is enabled for the organisation, 0 denotes it is not
