@@ -1,0 +1,124 @@
+
+version: 2
+
+models:
+  - name: src_user
+    description: "application user detais"
+    columns:
+      - name: application_user_id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: created_at
+        data_tests:
+          - not_null
+      - name: is_admin
+        data_tests:
+          - not_null
+      - name: organisation_id
+        data_tests:
+          - not_null
+      - name: application_user_role
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: application_user_status
+        data_tests:
+          - not_null
+      - name: user_id
+        data_tests:
+          - not_null
+      - name: filename
+        data_tests:
+          - not_null
+      - name: file_row_no
+        data_tests:
+          - not_null
+      - name: export_day
+        data_tests:
+          - not_null
+      - name: file_loaded_day
+        data_tests:
+          - not_null
+
+  - name: src_event
+    description: "application events"
+    columns:
+      - name: event_name
+        description: "name of the event"
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              values: ['PatientMessage Create Server', 'PatientVideoInvite Create Server']
+      - name: event_timestamp
+        data_tests:
+          - not_null
+      - name: attachment_count
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: event_user_type
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: event_version
+      - name: has_error
+      - name: message_id
+      - name: message_length
+      - name: message_type
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: organisation_id
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: product_origin
+      - name: source_type
+      - name: user_id
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+  - name: src_event
+    description: "application events"
+    columns:
+      - name: feature_name
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              values: ['Self Book Individual', 'Video', 'SMS']
+      - name: feature_selected
+        data_tests:
+          - not_null
+      - name: features_available
+        data_tests:
+          - not_null
+      - name: organisation_id
+        data_tests:
+          - not_null:
+              config:
+                severity: warn  
+      - name: export_day
+        data_tests:
+          - not_null
+      - name: filename
+        data_tests:
+          - not_null
+      - name: file_row_no
+        data_tests:
+          - not_null
+      - name: file_loaded_day
+        data_tests:
+          - not_null
