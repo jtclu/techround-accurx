@@ -2,7 +2,7 @@ WITH date_spine_day as ( -- generates a serie of dates from min(export_date) in 
     {{ dbt_utils.date_spine(
         datepart="day",
         start_date="cast('2024-03-01' as date)",
-        end_date="cast('2034-03-01' as date)" 
+        end_date="current_date()" 
     )
     }}
 ), 
@@ -11,7 +11,7 @@ date_spine_month as (
     {{ dbt_utils.date_spine(
         datepart="month",
         start_date="cast('2024-03-01' as date)",
-        end_date="cast('2034-03-01' as date)" 
+        end_date="current_date()" 
     )
     }}
 ),
@@ -20,18 +20,17 @@ date_spine_week as (
     {{ dbt_utils.date_spine(
         datepart="week",
         start_date="cast('2024-03-01' as date)",
-        end_date="cast('2034-03-01' as date)" 
+        end_date="current_date()" 
     )
     }}
 )
 
 SELECT 
     date_day AS date_day,
-    CASE WHEN date_spine_month IS NOT NULL THEN TRUE ELSE FALSE END AS is_month_start,
-    CASE WHEN date_spine_week IS NOT NULL THEN TRUE ELSE FALSE END AS is_week_start
+    CASE WHEN date_spine_month.date_month IS NOT NULL THEN TRUE ELSE FALSE END AS is_month_start,
+    CASE WHEN date_spine_week.date_week IS NOT NULL THEN TRUE ELSE FALSE END AS is_week_start
 FROM date_spine_day
 LEFT JOIN date_spine_month 
     ON date_spine_day.date_day = date_spine_month.date_month
 LEFT JOIN date_spine_week
     ON date_spine_day.date_day = date_spine_week.date_week
-

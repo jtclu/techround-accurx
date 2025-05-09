@@ -117,9 +117,12 @@ models:
         description: date since earliest feature flag data was captured in the datalake
       - name: organisation_id
         description: unique identifier for organisations with user access to the product/platform
+        data_tests:
+          - not_null:
+              severity: warn
       - name: selfbook_enabled_flag
         description: 1 denotes the feature is enabled for the organisation, 0 denotes it is not
-      - name: videoinvite_enabled_flag
+      - name: video_invite_enabled_flag
         description: 1 denotes the feature is enabled for the organisation, 0 denotes it is not
       - name: sms_free_enabled_flag
         description: 1 denotes the feature is enabled for the organisation, 0 denotes it is not
